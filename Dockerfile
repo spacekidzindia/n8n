@@ -13,8 +13,8 @@ WORKDIR /usr/src/app
 
 COPY . .
 
-RUN npm install --legacy-peer-deps
+RUN npm install -g pnpm && pnpm install
 
 EXPOSE 3000
 
-CMD ["n8n"]
+CMD ["pnpm", "start"]
