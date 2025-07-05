@@ -1,7 +1,6 @@
-# Use Debian-based Node image instead of Alpine for compatibility
 FROM node:18
 
-# Install dependencies
+# Install deps
 RUN apt-get update && apt-get install -y \
     bash \
     curl \
@@ -13,20 +12,20 @@ RUN apt-get update && apt-get install -y \
     git \
     && rm -rf /var/lib/apt/lists/*
 
-# Enable and install pnpm
-RUN corepack enable && corepack prepare pnpm@latest --activate
+# Install pnpm globally
+RUN npm install -g pnpm
 
-# Set working directory
+# Set working dir
 WORKDIR /app
 
-# Copy files
+# Copy project files
 COPY . .
 
-# Install Node.js dependencies using pnpm
-RUN pnpm install
+# Install Node.js deps
+RUN pnpm install --no-frozen-lockfile
 
-# Expose the port n8n runs on
+# Expose port
 EXPOSE 3000
 
-# Start the application
+# Start app
 CMD ["pnpm", "start"]
