@@ -1,30 +1,32 @@
-FROM node:18-alpine
+# Use Debian-based Node image instead of Alpine for compatibility
+FROM node:18
 
-# Install necessary dependencies
-RUN apk add --no-cache \
+# Install dependencies
+RUN apt-get update && apt-get install -y \
     bash \
     curl \
     python3 \
     make \
     g++ \
-    libc6-compat \
     openssl \
-    sqlite \
+    sqlite3 \
     git \
-    libstdc++ \
-    libgcc
+    && rm -rf /var/lib/apt/lists/*
+
+# Enable and install pnpm
+RUN corepack enable && corepack prepare pnpm@latest --activate
 
 # Set working directory
 WORKDIR /app
 
-# Copy all files
+# Copy files
 COPY . .
 
-# Install pnpm & dependencies
-RUN corepack enable && corepack prepare pnpm@latest --activate && pnpm install
+# Install Node.js dependencies using pnpm
+RUN pnpm install
 
-# Expose port
+# Expose the port n8n runs on
 EXPOSE 3000
 
-# Start n8n
+# Start the application
 CMD ["pnpm", "start"]
